@@ -8,6 +8,7 @@ package ai.worlds.vacuum;
 import ai.worlds.Location;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
@@ -18,7 +19,7 @@ import java.util.Vector;
  */
 public class William1VacuumAgent extends VacuumAgent {
 
-    Set<Model> internalState = new HashSet<Model>();
+    Set<Model> internalState = new LinkedHashSet<Model>();
     List<Location> around = new ArrayList<Location>();
 
     @Override
@@ -26,16 +27,33 @@ public class William1VacuumAgent extends VacuumAgent {
         Location loc = this.body.loc;
         Vector p = (Vector) percept;
 
-        if (around.size() != 4) {
+        Location forward = loc.forward(body.heading);
 
-            Location foward = loc.forward(body.heading);
-            around.add(foward);
-            action = "turn left";
-            
-        } else {
-            for(Location l : around){
-                Model m = new Model(l,"unknown");
+        if (p.elementAt(1) == "dirt") {
+                Model m = new Model(loc, "clean");
+                internalState.add(m);
+                action = "suck";
+            } else if (p.elementAt(2) == "home") {
+                if (internalState.isEmpty()) {
+                    action = "shut-off";
+
+                } else {
+
+                    action = "forward";
+                }
+
+            } else if (p.elementAt(1) == "dump") {
+
+                Model m1 = new Model(loc, "dump");
+                internalState.add(m1);
+                action = "turn left";
+            } else {
+                this.body.heading.forward(this.body.heading);
             }
+
+//            for(Location l : around){
+//                Model m = new Model(l,"unknown");
+//            }
 
 //            if (internalState.isEmpty()) {
 //
@@ -63,8 +81,7 @@ public class William1VacuumAgent extends VacuumAgent {
 //            } else {
 //                this.body.heading.forward(this.body.heading);
 //            }
-
-        }
+      
 
     }
 
