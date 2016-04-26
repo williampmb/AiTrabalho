@@ -19,7 +19,7 @@ import java.util.Vector;
  *
  * @author William
  */
-public class William1VacuumAgent extends VacuumAgent {
+public class William2VacuumAgent extends VacuumAgent {
 
     Location currentGoal;
     Map<Location, String> internalState = new HashMap<Location, String>();
@@ -35,6 +35,19 @@ public class William1VacuumAgent extends VacuumAgent {
         Vector p = (Vector) percept;
         Location loc = this.body.loc;
         Location forward = loc.forward(body.heading);
+        
+        if (internalState.isEmpty()) {
+            internalState.put(loc, "home");
+            arrivedAtGoal = true;
+            currentGoal = loc;
+        }
+        
+        String currentState = internalState.get(loc);
+        if(currentState.equals("unknown") && (loc.x != currentGoal.x || loc.y != currentGoal.y)){
+            internalState.put(loc, "clean");
+        }
+        
+        
 
         if (p.elementAt(0) == "bump") {
             internalState.put(forward, "bump");
@@ -70,10 +83,7 @@ public class William1VacuumAgent extends VacuumAgent {
             return;
         }
 
-        if (internalState.isEmpty()) {
-            internalState.put(loc, "home");
-            arrivedAtGoal = true;
-        }
+        
 
         if (arrivedAtGoal) {
             arrivedAtGoal = false;
@@ -233,86 +243,6 @@ public class William1VacuumAgent extends VacuumAgent {
             }
         }
 
-//        else if (p.elementAt(0) == "bump") {
-//                internalState.put(loc, "bump");
-//                action = "turn left";
-//                return;
-//
-//            }
-//		if (p.elementAt(1) == "dirt") {
-//			
-//			Model m = new Model(loc, "clean");
-//			internalState.add(m);
-//			action = "suck";
-//			
-//		} else if (p.elementAt(2) == "home") {
-//			if(allClean){
-//				action = "shut-down";
-//			}else{
-//				if(!lookAround){
-//					boolean inside = false;
-//					for(Model m : internalState){
-//						if(m.l.x == forward.x && m.l.y == forward.y){
-//							inside = true;
-//						}
-//					}
-//					
-//					if(!inside){
-//						Model newModel = new Model(forward, "unknown");
-//						internalState.add(newModel);
-//					}
-//                                        
-//					count++;
-//                                        
-//					if(count == 4){
-//						lookAround=true;
-//					}
-//					action = "turn left";
-//					
-//				}else{
-//					
-//					
-//				}
-//			}
-//
-//		} else if (p.elementAt(1) == "dump") {
-//
-//			Model m1 = new Model(loc, "dump");
-//			internalState.add(m1);
-//			action = "turn left";
-//		} else {
-//			this.body.heading.forward(this.body.heading);
-//		}
-        // for(Location l : around){
-        // Model m = new Model(l,"unknown");
-        // }
-        // if (internalState.isEmpty()) {
-        //
-        // Model unknow = new
-        // Model(this.body.heading.forward(this.body.heading), "unknown");
-        // }
-        //
-        // if (p.elementAt(1) == "dirt") {
-        // Model m = new Model(l, "clean");
-        // internalState.add(m);
-        // action = "suck";
-        // } else if (p.elementAt(2) == "home") {
-        // if (internalState.isEmpty()) {
-        // action = "shut-off";
-        //
-        // } else {
-        //
-        // action = "forward";
-        // }
-        //
-        // } else if (p.elementAt(1) == "dump") {
-        //
-        // Model m1 = new Model(l, "dump");
-        // internalState.add(m1);
-        // action = "turn left";
-        // } else {
-        // this.body.heading.forward(this.body.heading);
-        // }
     }
 
 }
